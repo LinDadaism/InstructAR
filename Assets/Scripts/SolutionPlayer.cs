@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class SolutionPlayer : MonoBehaviour
 {
-    public GameObject solution;
+    public GameObject solution = null;
     public Dropdown dropdown;
     public Text status;
 
@@ -20,16 +20,19 @@ public class SolutionPlayer : MonoBehaviour
     private float duration;
     private bool isPaused;
 
+    private Vector3 camStartPos;
+
     void Start()
     {
         dropdownLabel = dropdown.options[0].text;
         isPaused = false;
+
+        chooseSolution();
+        initializeSolution();
     }
 
     void Update()
     {
-        chooseSolution();
-        initializeSolution();
     }
 
     // get the solution choice from the Dropdown
@@ -59,6 +62,13 @@ public class SolutionPlayer : MonoBehaviour
             duration = animator.duration;
             startPos = animator.getStartPos();
             endPos = animator.endPos;
+
+            Vector3 offset = new Vector3(1.0f, 10.0f, 5.0f);
+            for (int i = 0; i < numBlocks; i++)
+            {
+                endPos[i] = endPos[i] + offset;
+            }
+
             startRot = animator.getStartRot();
             endRot = animator.getEndRotQuat();
         }
@@ -67,7 +77,7 @@ public class SolutionPlayer : MonoBehaviour
 
     void clear()
     {
-        Destroy(solution.gameObject);
+        solution.gameObject.SetActive(false);
     }
 
     // stop and clear the animation on screen
@@ -78,19 +88,18 @@ public class SolutionPlayer : MonoBehaviour
             isPaused = true;
         }
         else
-        {
+        { 
             isPaused = false;
         }
-        
-        //StopCoroutine(AnimateSolution());
-        //Destroy(solution);
     }
 
     // run animation on startButton click
     public void onStartButtonClick()
     {
+        //clear();
+
         // For debugging
-        Debug.Log("Start" + solution.gameObject.name);
+        Debug.Log("Start " + solution.gameObject.name);
 
         if (solution != null)
         {

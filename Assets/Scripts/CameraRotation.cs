@@ -8,14 +8,14 @@ public class CameraRotation : MonoBehaviour
     public float speedV = 1; // vertical rotational speed
     public float speedPos = 0.1f; // movement speed
 
-    private Vector3 startPos = new Vector3(15,5,30); // start global position
+    //private Vector3 startPos; // start global position
     //private Vector3 startRot = new Vector3(30,180,0); // start global rotation
 
     private float inputX;
 
     void Start()
     {
-        transform.position = startPos;
+        //transform.position = startPos;
         //transform.eulerAngles = startRot;
         Debug.Log("camera ready");
     }
