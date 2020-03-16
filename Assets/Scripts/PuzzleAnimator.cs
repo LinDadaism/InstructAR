@@ -1,53 +1,36 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PuzzleAnimator : MonoBehaviour
 {
-    /*enum State
-    {
-        BEGIN,
-        BLOCK1,
-        BLOCK2,
-        BLOCK3,
-        BLOCK4,
-        BLOCK5,
-        BLOCK6,
-        BLOCK7
-    }*/
-
-    public Vector3 p1, p2, p3, p4, p5, p6, p7; // end positions of 7 blocks
-    public Vector3 r1, r2, r3, r4, r5, r6, r7; // end rotations of 7 blocks in euler angle
-    public float duration = 5; // seconds
-
+    public Vector3[] endPos = new Vector3[7]; // end positions of 7 blocks
+    public Vector3[] endRot = new Vector3[7]; // end orientations of 7 blocks in euler angle
+    public float duration = 3; // seconds
+    
     private int numBlocks = 7;
-    private Vector3[] startPos;
-    private Vector3[] endPos;
-    private Quaternion[] startRot;
-    private Quaternion[] endRot;
+    private Vector3[] startPos = new Vector3[0];
+    private Quaternion[] startRot = new Quaternion[0];
+    private Quaternion[] endRotQuat = new Quaternion[0];
 
-    //private State _state = BEGIN;
-
-    void Start()
+    // initialize start positions and orientations and
+    // convert end orientation in euler angers to quaternions
+    public void initialize()
     {
         startPos = new Vector3[numBlocks];
         startRot = new Quaternion[numBlocks];
-        endRot = new Quaternion[numBlocks];
-        endPos = new Vector3[] { p1, p2, p3, p4, p5, p6, p7 };
-        Vector3[] endRotEuler = new Vector3[] { r1, r2, r3, r4, r5, r6, r7 };
-        
+        endRotQuat = new Quaternion[numBlocks];
+
         for (int i = 0; i < numBlocks; i++)
         {
             startPos[i] = new Vector3(i * 5, 0, 0);
             startRot[i] = Quaternion.identity;
-            endRot[i] = Quaternion.Euler(endRotEuler[i]);
+            endRotQuat[i] = Quaternion.Euler(endRot[i]);
         }
     }
 
-    void Update()
-    {
-    }
-
+    // getter methods
     public int getNumPieces()
     {
         return numBlocks;
@@ -68,8 +51,13 @@ public class PuzzleAnimator : MonoBehaviour
         return startRot;
     }
 
-    public Quaternion[] getEndRot()
+    public Vector3[] getEndRot()
     {
         return endRot;
+    }
+
+    public Quaternion[] getEndRotQuat()
+    {
+        return endRotQuat;
     }
 }

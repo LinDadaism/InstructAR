@@ -1,45 +1,101 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SolutionPlayer : MonoBehaviour
 {
     public GameObject solution;
+    public Dropdown dropdown;
+    public Text status;
 
-    private int numBlocks;
-    private float duration;
+    //private string prevSoln; // stores the previous solution name
     private Vector3[] startPos;
     private Vector3[] endPos;
     private Quaternion[] startRot;
     private Quaternion[] endRot;
+    private string dropdownLabel;
+    private int numBlocks;
+    private float duration;
+    private bool isPaused;
 
-    // Get the positions and rotations of 7 pieces
     void Start()
     {
-        numBlocks = solution.gameObject.GetComponent<PuzzleAnimator>().getNumPieces();
-        duration = solution.gameObject.GetComponent<PuzzleAnimator>().duration;
-        startPos = solution.gameObject.GetComponent<PuzzleAnimator>().getStartPos();
-        endPos = solution.gameObject.GetComponent<PuzzleAnimator>().getEndPos();
-        startRot = solution.gameObject.GetComponent<PuzzleAnimator>().getStartRot();
-        endRot = solution.gameObject.GetComponent<PuzzleAnimator>().getEndRot();
-
-        if (startPos != null)
-        {
-            for (int i = 0; i < numBlocks; i++)
-            {
-                Debug.Log(endPos[i]);
-            }
-        }
-        else { Debug.Log(solution.gameObject.GetComponent<PuzzleAnimator>()); }
+        dropdownLabel = dropdown.options[0].text;
+        isPaused = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.Space))
+        chooseSolution();
+        initializeSolution();
+    }
+
+    // get the solution choice from the Dropdown
+    void chooseSolution()
+    {
+        name = dropdown.GetComponent<DropdownButton>().solutionName();
+
+        if (!name.Equals(dropdownLabel))
         {
-            Debug.Log("start simulation");
-            StartCoroutine("AnimateSolution");
+            solution = GameObject.Find(name);
+        }
+    }
+
+    // initialize and get pos & ori of a solution
+    void initializeSolution()
+    {
+        if (solution != null)
+        {
+            // fetch the script on the PuzzleSolution
+            PuzzleAnimator animator = solution.gameObject.GetComponent<PuzzleAnimator>();
+
+            // initialize the PuzzleAnimator
+            animator.initialize();
+
+            // get all the pos & ori info of that solution
+            numBlocks = animator.getNumPieces();
+            duration = animator.duration;
+            startPos = animator.getStartPos();
+            endPos = animator.endPos;
+            startRot = animator.getStartRot();
+            endRot = animator.getEndRotQuat();
+        }
+        
+    }
+
+    void clear()
+    {
+        Destroy(solution.gameObject);
+    }
+
+    // stop and clear the animation on screen
+    public void onPauseButtonClick()
+    {
+        if (isPaused == false)
+        {
+            isPaused = true;
+        }
+        else
+        {
+            isPaused = false;
+        }
+        
+        //StopCoroutine(AnimateSolution());
+        //Destroy(solution);
+    }
+
+    // run animation on startButton click
+    public void onStartButtonClick()
+    {
+        // For debugging
+        Debug.Log("Start" + solution.gameObject.name);
+
+        if (solution != null)
+        {
+            isPaused = false;
+            StartCoroutine(AnimateSolution());
         }
     }
 
@@ -48,14 +104,26 @@ public class SolutionPlayer : MonoBehaviour
         for (int i = 0; i < numBlocks; i++)
         {
             Transform child = solution.gameObject.transform.GetChild(i);
-            Debug.Log(child.name);
+            // show on screen which block is being animated
+            float percentage = (float)(i + 1) / numBlocks * 100;
+            status.text = "Status: Animating " + child.name + 
+                            ", Completeness: " + percentage.ToString("0.00") + " %";
 
+            //float time = 0;
+            //while (time < duration)
             for (float time = 0; time < duration; time += Time.deltaTime)
             {
+                while (isPaused)
+                {
+                    yield return null;
+                }
+
                 float u = time / duration; // clamped to range [0,1]
                 child.position = Vector3.Lerp(startPos[i], endPos[i], u);
                 child.rotation = Quaternion.Slerp(startRot[i], endRot[i], u);
                 yield return null;
+
+                //time += Time.deltaTime;
             }
 
             child.position = endPos[i];
