@@ -5,13 +5,10 @@ using UnityEngine.UI;
 
 public class ChangeStartButton : MonoBehaviour
 {
-    //public Button startButton;
-    public string label; // text to change
-
-    // change button text
+    // change button text after clicks
     public void changeLabel()
     {
         Text buttonText = gameObject.GetComponentInChildren<Text>();
-        buttonText.text = label;
+        buttonText.text = "Restart";
     }
 }

@@ -5,18 +5,30 @@ using UnityEngine.UI;
 
 public class ChangePauseButton : MonoBehaviour
 {
+    private Text buttonText;
     private int count = 0;
 
-    // click counter
-    public void counter()
+    void Update()
+    {
+        buttonText = gameObject.GetComponentInChildren<Text>();
+    }
+
+    // increase counter
+    public void increaseCounter()
     {
         count++;
+    }
+
+    // clear counter
+    public void clearCounter()
+    {
+        count = 0;
+        buttonText.text = "Pause Animation";
     }
 
     // change button text
     public void changeLabel()
     {
-        Text buttonText = gameObject.GetComponentInChildren<Text>();
         if (count % 2 == 0)
         {
             buttonText.text = "Pause";

@@ -36,14 +36,13 @@ public class MenuScript : MonoBehaviour
 
     public void onWelcome()
     {
-        Debug.Log("go back to welcome!");
+        //Debug.Log("go back to welcome!");
         currentState = MenuStates.Welcome;
-        // add load level for new scene here
     }
 
     public void onMainMenu()
     {
-        Debug.Log("go to main menu!");
+        //Debug.Log("go to main menu!");
         currentState = MenuStates.Main;
     }
 }

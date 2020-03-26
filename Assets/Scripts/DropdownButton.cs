@@ -33,8 +33,6 @@ public class DropdownButton : MonoBehaviour
             dropdownValue = dropdown.value;
             message = dropdown.options[dropdownValue].text;
             choice.text = "Choice: " + message;
-            // For debugging
-            Debug.Log(message);
         } else {
             Debug.Log("The Dropdown is null.");
         }
@@ -43,15 +41,11 @@ public class DropdownButton : MonoBehaviour
     void PopulateList()
     {
         List<string> choices = new List<string>();
-        
+
         // check to ensure there is a placeholder for the button label
         if (dropdown.options.Capacity == 0)
         {
             choices.Add(label);
-        } 
-        else 
-        {
-            choices.Add(dropdown.options[0].text);
         }
 
         // add all the puzzle solutions into dropdown's options
@@ -70,7 +64,7 @@ public class DropdownButton : MonoBehaviour
         dropdownValue = dropdown.value;
         message = change.options[dropdownValue].text;
         choice.text = "Choice: " + message;
-        // For debugging
+        // for debugging
         Debug.Log(message);
     }
 

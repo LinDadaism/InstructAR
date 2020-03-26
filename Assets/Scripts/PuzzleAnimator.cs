@@ -7,7 +7,7 @@ public class PuzzleAnimator : MonoBehaviour
 {
     public Vector3[] endPos = new Vector3[7]; // end positions of 7 blocks
     public Vector3[] endRot = new Vector3[7]; // end orientations of 7 blocks in euler angle
-    public float duration = 1; // in seconds
+    //public float duration = 1; // in seconds
     
     private int numBlocks = 7;
     private Vector3[] startPos = new Vector3[0];
