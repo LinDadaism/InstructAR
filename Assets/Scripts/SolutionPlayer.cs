@@ -8,6 +8,7 @@ public class SolutionPlayer : MonoBehaviour
 {
     public Dropdown dropdown;
     public Button pauseButton;
+    public Button startButton;
     public Text status;
     public float duration; // in seconds
 
@@ -21,13 +22,14 @@ public class SolutionPlayer : MonoBehaviour
     private int numBlocks;
     private bool isPaused; // if animation is in progress
     private bool isPrevDone; // if the previous animation is finished
+    private bool isOthersDeact; // if solutions other than the choice are deactivated
 
     void Start()
     {
         if (duration == 0) duration = 3; // set 3 seconds by default
         isPaused = false;
         isPrevDone = true;
-
+        isOthersDeact = false;
     }
 
     void Update()
@@ -81,6 +83,41 @@ public class SolutionPlayer : MonoBehaviour
         
     }
 
+    // deactivate solutions other than the selected one
+    void deactivateOthers()
+    {
+        Debug.Log(solution.name);
+        GameObject others;
+        string othersName;
+        foreach (Dropdown.OptionData opt in dropdown.options)
+        {
+            othersName = opt.text;
+            Debug.Log(othersName);
+            bool isLabel = othersName.Equals(dropdown.options[0].text);
+            bool isSolution = othersName.Equals(solution.name);
+            if (!isLabel && !isSolution)
+            {
+                Debug.Log(othersName);
+                others = GameObject.Find(othersName);
+                Debug.Log(others);
+                others.SetActive(false);
+            }
+        }
+
+        isOthersDeact = true;
+    }
+
+    // put blocks back to their original place
+    void restartPos()
+    {
+        for (int i = 0; i < numBlocks; i++)
+        {
+            Transform child = solution.gameObject.transform.GetChild(i);
+            child.position = startPos[i];
+            child.rotation = startRot[i];
+        }
+    }
+
     /* TODO: clear the animated solution
     void clear()
     {
@@ -106,18 +143,21 @@ public class SolutionPlayer : MonoBehaviour
     public void onStartButtonClick()
     {
         //clear();
-        
-        // sync PauseButton label
-        Text pauseButtonText = pauseButton.gameObject.GetComponentInChildren<Text>();
-        ChangePauseButton change = pauseButton.gameObject.GetComponent<ChangePauseButton>();
+        if (!isOthersDeact) deactivateOthers();
 
+        // sync PauseButton label later by calling clearCounter()
+        ChangePauseButton change = pauseButton.gameObject.GetComponent<ChangePauseButton>();
+        Text startButtonText = startButton.gameObject.GetComponentInChildren<Text>();
+
+        // start animation only when previous animation is finished
         if (solution != null && isPrevDone)
         {
             // For debugging
-            Debug.Log("Start " + solution.gameObject.name);
+            Debug.Log("Start animating " + solution.gameObject.name);
 
             isPaused = false;
             change.clearCounter();
+            restartPos();
 
             StartCoroutine(AnimateSolution());
         }
