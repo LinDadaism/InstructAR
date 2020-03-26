@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraRotation : MonoBehaviour
+public class CamControl : MonoBehaviour
 {
     public float speedH = 1; // horizontal rotational speed
     public float speedV = 1; // vertical rotational speed
